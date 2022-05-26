@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <form action="" method="POST">
+      <h3>Add New</h3>
+      <div>
+        <label for="firstname">First Name</label>
+        <input type="text" id="firstname" name="firstname" />
+      </div>
+      <div>
+        <label for="lastname">Last Name</label>
+        <input type="text" id="lastname" name="lastname" />
+      </div>
+
+      <h3>Update</h3>
+      <div>
+        <label for="updatedfirstname">First Name</label>
+        <input type="text" id="updatedfirstname" name="updatedfirstname" />
+      </div>
+      <div>
+        <label for="updatedlastname">Last Name</label>
+        <input type="text" id="updatedlastname" name="updatedlastname" />
+      </div>
+      <h6>Enter index of file ehich you want to update like A1 B2</h6>
+      <div>
+        <label for="rownum">row num</label>
+        <input type="text" id="rownum" name="rownum" />
+      </div>
+      <div>
+        <label for="colnum">coulmn num</label>
+        <input type="text" id="colnum" name="colnum" />
+      </div>
+      <div>
+        <h3>
+          Fill this section if You want request to create new sheet for you
+        </h3>
+        <label for="sheetname">sheet Name</label>
+        <input type="text" id="sheetname" name="sheetname" />
+        <label for="newemail">New Email</label>
+        <input type="text" id="newemail" name="newemail" />
+        <h6>select type of permission "reader" or "writer"</h6>
+        <label for="Permissions">Permissions</label>
+        <input type="text" id="Permissions" name="Permissions" />
+      </div>
+
+      <div>
+        <h3>Share</h3>
+        <label for="newnewemail">New share email</label>
+        <input type="text" id="newnewemail" name="newnewemail" />
+        <h6>select type of permission "reader" or "writer"</h6>
+        <label for="newpermissions">New User Permissions</label>
+        <input type="text" id="newpermissions" name="newpermissions" />
+      </div>
+
+      <div>
+        <h3>delete permission</h3>
+        <label for="deletepermissions">deletepermissions</label>
+        <input type="text" id="deletepermissions" name="deletepermissions" />
+      </div>
+      <button type="submit">Submit</button>
+    </form>
+  </body>
+</html>
