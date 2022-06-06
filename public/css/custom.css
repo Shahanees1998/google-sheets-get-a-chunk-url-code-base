@@ -1,0 +1,92 @@
+/*
+VQode Time Tracking
+*/
+
+/*----- Body Style Start ----- */
+html
+{
+	scroll-behavior: smooth;
+}
+
+body 
+{
+    margin: 0;
+    background-color: #ebf2f8;
+    font-family: 'Poppins', sans-serif;
+    padding: 20px;
+}
+/*----- Body Style End ----- */
+h1 {
+    font-size: 30px;
+    color: #147df0;
+    margin: 0;
+    text-align: center;
+}
+
+h2 {
+    font-size: 16px;
+    color: #0A1118;
+    margin: 0;
+    font-weight: normal;
+}
+
+h2 span {
+    font-size: 16px;
+    color: #147df0;
+    margin: 0;
+    border-left: 1px solid #dddddd;
+    padding-left: 20px;
+    font-weight: bold !important;
+}
+
+h3 {
+    font-size: 20px;
+    color: #0A1118;
+    margin: 0;
+    font-weight: normal;
+}
+
+h3 span {
+    font-size: 20px;
+    color: #147df0;
+    margin: 0;
+    font-weight: bold;
+}
+
+.red {
+    color: #de1e1e;
+}
+.green {
+    color: green;
+}
+.flex {
+    display: flex;
+    justify-content: space-between;
+}
+
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 20px;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+
+.flex-end {
+    display: flex;
+    justify-content: flex-end;
+}
+.price-box {
+    width: 70%;
+    border: 1px solid #dddddd;
+    padding: 10px;
+}

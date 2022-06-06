@@ -3,92 +3,54 @@ const { google } = require("googleapis");
 
 const app = express();
 const sheets = google.sheets("v4");
-
+const PORT = 5000; 
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
-
-app.get("/", (req, res) => {
-  res.render("index");
+app.use(express.static(__dirname + '/public'));
+app.get('/404',async function (req, res) {
+  res.render('404');
 });
-
-app.post("/", async (req, res) => {
-  const {
-    deletepermissions,
-    firstname,
-    lastname,
-    updatedfirstname,
-    updatedlastname,
-    rownum,
-    colnum,
-    addnewuser,
-    newnewemail,
-    newpermissions,
-  } = req.body;
+app.get('/:code',async function (req, res) {    
+  const list = [];
+  let amount_paid = 0
+  let amount_due = 0
+  let tottal_amount = 0
+  let status
+  let getRows
+  const value = req.params.code;
   const auth = new google.auth.GoogleAuth({
     keyFile: "credentials.json",
     scopes: "https://www.googleapis.com/auth/drive",
   });
 
   const client = await auth.getClient();
-
   const googleSheets = google.sheets({ version: "v4", auth: client });
-  const spreadsheetId = "14T6QAGhhGGhHqGpKfH9tTJCLFs4BXYyCmmdIvXVMWDk";
+  const spreadsheetId = "1HDv9eKO_Ox7b4nX7OK_GCXYdk4hposStTUPks5QbfJc";
 
   // Get all data about spreadsheet
-  const metaData = await googleSheets.spreadsheets.get({
-    auth,
-    spreadsheetId,
-  });
+ 
   // Read rows from spreadsheet
-  const getRows = await googleSheets.spreadsheets.values.get({
-    auth,
-    spreadsheetId,
-    range: "Sheet1!A:B",
-  });
-  // Write rows to spreadsheet
-  if (deletepermissions) {
-    setTimeout(function () {
-      var drive = google.drive({ version: "v3", auth: auth });
-      drive.permissions.delete(
-        {
-          fileId: spreadsheetId,
-          permissionId: "09927679628176496343",
-        },
-        (err, res) => {
-          if (err) {
-            console.error(err);
-            return;
-          }
-          console.log("deleted");
-          console.log(res.data); // In this case, no values are returned.
-        }
-      );
-    }, 3000);
-  }
-  if (firstname) {
-    await googleSheets.spreadsheets.values.append({
+  try{
+    getRows = await googleSheets.spreadsheets.values.get({
       auth,
       spreadsheetId,
-      range: "Sheet1!A:B",
-      valueInputOption: "USER_ENTERED",
-      resource: {
-        values: [[firstname, lastname]],
-      },
+      range: "Registered!A:G",
+    
     });
   }
-  if (newpermissions) {
+  catch{
     var drive = google.drive({ version: "v3", auth: auth });
     var body = {
       type: "user",
-      role: newpermissions,
-      emailAddress: newnewemail,
+      role: "writer",
+      emailAddress: "nodejs@shahanees1998.iam.gserviceaccount.com",
     };
     drive.permissions.create(
       {
         fileId: spreadsheetId, //sheetID returned from create sheet response
         resource: body,
       },
-      function (err, response) {
+      async function (err, response) {
         if (err) {
           console.error(err);
           return;
@@ -96,94 +58,66 @@ app.post("/", async (req, res) => {
           console.log("Created a new permision:");
           //  console.log(response.data);
           console.log(JSON.parse(JSON.stringify(response)));
+          getRows = await googleSheets.spreadsheets.values.get({
+            auth,
+            spreadsheetId,
+            range: "Registered!A:G",
+          
+          });
         }
       }
     );
   }
-  if (updatedfirstname) {
-    main(auth);
-    async function main(auth) {
-      const authClient = auth;
-      console.log("update");
+ 
+ //console.log(getRows.data.values[1][0].slice(3, 5))
+  for(let i =0; i<getRows.data.values.length;i++)
+  {
+    if(getRows.data.values[i][0] == value)
+    {
+    //  tottal = getRows.data.values[i][3]\
+   amount_due =  getRows.data.values[i][4].replace(',', '')
+   amount_paid =  getRows.data.values[i][5].replace(',', '')
+   if(amount_due == 0)
+   {
+     status = 'PAID'
+   }
+   else{
+    status = 'DUE'
 
-      let values = [
-        ["mujeeb"],
-        // Additional rows ...
-      ];
-      const request = {
-        // The ID of the spreadsheet to update.
-        spreadsheetId: spreadsheetId, // TODO: Update placeholder value.
+   }
 
-        // The A1 notation of the values to update.
-        range: `Sheet1!${rownum}:${colnum}`, // TODO: Update placeholder value.
 
-        // How the input data should be interpreted.
-        valueInputOption: "USER_ENTERED", // TODO: Update placeholder value.
 
-        resource: {
-          // TODO: Add desired properties to the request body. All existing properties
-          // will be replaced.
-          values: [[updatedfirstname, updatedlastname]],
-        },
-
-        auth: authClient,
-      };
-
-      try {
-        const response = (await sheets.spreadsheets.values.update(request))
-          .data;
-        // TODO: Change code below to process the `response` object:
-        console.log(JSON.stringify(response, null, 2));
-      } catch (err) {
-        console.error(err);
+tottal_amount = parseInt(amount_due.replace(',', '')) + parseInt(amount_paid.replace(',', ''))
+   //   let new_value = getRows.data.values[i][3].replace(',', '');
+     // tottal = tottal + parseInt(new_value)
+      for(let j =0; j<parseInt(getRows.data.values[i][0].slice(3, 5)) ; j++)
+      {
+        list.push(getRows.data.values[i+j])
       }
     }
   }
-  const { newemail, sheetname, permissions } = req.body;
-
-  if (newemail) {
-    googleSheets.spreadsheets.create(
-      {
-        auth: auth,
-        resource: {
-          properties: {
-            title: sheetname,
-          },
-        },
-      },
-      (err, response) => {
-        if (err) {
-          console.log(`The API returned an error: ${err}`);
-          return;
-        }
-        console.log(response);
-        var body = {
-          type: "user",
-          role: "reader",
-          emailAddress: newemail,
-        };
-        var drive = google.drive({ version: "v3", auth: auth });
-        drive.permissions.create(
-          {
-            fileId: response.data.spreadsheetId, //sheetID returned from create sheet response
-            resource: body,
-          },
-          function (err, response) {
-            if (err) {
-              console.error(err);
-              return;
-            } else {
-              console.log("Created a new spreadsheet:");
-              //  console.log(response.data);
-              console.log(JSON.parse(JSON.stringify(response)));
-            }
-          }
-        );
-      }
-    );
+  if(list.length === 0){
+    res.redirect('/404');
+    return;
   }
+  // redirect to 404
 
-  res.send(getRows.data);
-});
 
-app.listen(1337, (req, res) => console.log("listening on port 1337"));
+console.log(list.length)
+  //res.send(getRows.data.values);                   
+ res.render("index", {list: list,tottal_amount : tottal_amount ,list_length: list.length,amount_due:amount_due,amount_paid:amount_paid, status: status });  
+})
+
+
+
+
+
+
+
+app.listen(PORT, (error) => {       // Listen
+  if(!error) console.log("Server is Successfully Running,and App is listening on port "+ PORT)
+  else
+      console.log("Error occured, server can't start", error);
+  }
+);
